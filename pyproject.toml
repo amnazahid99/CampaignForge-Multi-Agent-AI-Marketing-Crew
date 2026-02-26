@@ -5,10 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11.14"
 dependencies = [
-    "anthropic>=0.83.0",
     "chromadb>=1.5.1",
     "fastapi[standard]>=0.133.0",
     "numpy==1.26.4",
+    "ollama>=0.6.1",
     "onnxruntime==1.17.3",
     "sentence-transformers==2.6.1",
     "torch==2.2.2",
