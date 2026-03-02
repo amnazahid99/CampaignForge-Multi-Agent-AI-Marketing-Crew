@@ -1,0 +1,86 @@
+Course Title: Agent Skills
+Course Link: https://github.com/the-schoolofai/agent-skills-files
+Course Instructor: Rizwan
+
+Lesson 1: Introduction to Agent Skills - Marketing Campaign Analysis
+Lesson Link: https://github.com/the-schoolofai/agent-skills-files/tree/main/L1-part-I
+
+Agent Skills allow AI agents to perform specific tasks accurately by providing organized instructions, scripts, assets, and resources. In this lesson, we explore skills through a marketing campaign analysis use case.
+
+A skill is a folder of organized files that agents can discover to perform specific tasks. The first example is an "analyzing-marketing-campaign" skill that helps Claude analyze campaign data and recommend budget reallocations.
+
+The workflow has two parts. In Part 1, you can either reference a skill or attach campaign data directly. The request asks Claude to evaluate each channel's performance regarding funnel and efficiency metrics, then recommend budget reallocation within constraints such as $10k between channels and limiting increases to 15% per channel.
+
+In Part 2, Claude generates a multi-sheet Excel deliverable containing an Executive Summary with findings and reallocation table, Funnel Analysis sheet, Efficiency Analysis sheet, and Raw Data sheet. Formatting includes color coding: green for good, red for bad.
+
+Budget Reallocation Rules are a key part of this skill. Rule 0 states that a channel is eligible for budget changes only if it has 50 or more conversions in the analysis period. Channels below threshold are classified as INSUFFICIENT_DATA and set to MAINTAIN.
+
+Rule 1 covers Channel Classification. Channels are classified into exactly one category, applied in order where first match wins. PAUSE means 100% decrease, triggered when a channel has been negative for 3+ consecutive weeks or shows no improvement after optimization for 3+ weeks. DECREASE_HEAVY means 45% decrease, triggered when ROAS is less than 50% of target AND Net Profit is zero or less, or CPA exceeds 150% of max AND Net Profit is zero or less.
+
+INCREASE uses a user-specified cap (default 15%) and requires all conditions: ROAS at or above 115% of target, CPA at or below 80% of max, and Net Profit greater than 0. DECREASE_LIGHT means 25% decrease, triggered when ROAS is below 80% of target or CPA exceeds 120% of max. MAINTAIN means 0% change for channels not meeting any other criteria.
+
+Rule 2 covers calculating budget changes. Step 1 calculates decreases: DECREASE_HEAVY reduces current spend by 45%, DECREASE_LIGHT by 25%. Step 2 sums all decreases as freed budget. Step 3 allocates to INCREASE channels by distributing proportionally by Net Profit. Step 4 applies caps: per-channel cap defaults to 15% of current spend, and if a user reallocation limit is specified, increases are scaled proportionally. Step 5 calculates unallocated savings reported as available for reserve.
+
+Multi-week adjustments modify classifications based on historical context. If a channel has been negative for 2+ weeks, it upgrades to DECREASE_HEAVY or PAUSE. If negative for 3+ weeks, it becomes PAUSE with budget set to $0. If budget was changed last week, it overrides to MAINTAIN to allow 5-7 days to stabilize. If a channel improved from last week, DECREASE_LIGHT can upgrade to MAINTAIN.
+
+Lesson 2: Why Agent Skills - Part II
+Lesson Link: https://github.com/the-schoolofai/agent-skills-files/tree/main/L1-part-II
+
+Agent Skills represent a lightweight, open format designed to extend AI agent capabilities. A skill is a folder of organized files consisting of instructions, scripts, assets, and resources that agents can discover to perform specific tasks accurately.
+
+The approach to agent design has evolved significantly. Rather than deploying specialized agents for narrow domains such as research, coding, finance, or marketing, the new model emphasizes general-purpose agents that rely on code as the universal interface with simple bash and filesystem scaffolding.
+
+Skills serve three primary purposes. First, Domain Expertise which includes brand guidelines, legal processes, and analytical methodologies. Second, Repeatable Workflows such as campaign reviews, client preparation, and business reviews. Third, New Capabilities including presentations, spreadsheets, PDF reports, and MCP servers.
+
+Portability remains central to the skills concept. They function across Claude Code, Claude.ai, the Claude Agent SDK, and the Claude API, establishing an open standard across growing agent products.
+
+Composability enables skills to combine into sophisticated workflows. Brand skills paired with presentation tools and data analysis capabilities create integrated solutions.
+
+The specification requires a SKILL.md file with optional directories for references, scripts, and assets. Progressive disclosure protects context windows by loading metadata initially, then instructions and resources on demand.
+
+Lesson 3: Skills vs Tools, MCP, and Subagents
+Lesson Link: https://github.com/the-schoolofai/agent-skills-files/tree/main/L2
+
+This lesson compares Skills with other agent components: MCP, Tools, and Subagents.
+
+Skills vs MCP: MCP connects your agent to external systems and data such as databases, APIs, and services. Skills teach your agent what to do with that data. For example, an MCP server connects to a database, while a Skill says "Compute metric X using columns A and B of this table." In short, MCP provides access, Skills provide expertise.
+
+Skills vs Tools: Tools provide agents with essential capabilities to accomplish tasks. Skills extend an agent's capabilities with specialized knowledge. Tool definitions (name, description, parameters) always live in the context window. Skills are loaded dynamically as needed. Tools offer a fixed set of capabilities, while Skills can include scripts as tools that are used when needed, sometimes called "tools on demand."
+
+Skills vs Subagents: Subagents have their own isolated context and tool permissions. Skills provide expertise knowledge to the main agent or any of its subagents. An agent delegates a task to a specialized subagent, which works independently and maybe in parallel, then returns results. Skills inform how work should be done. For example, you might have a Code Reviewer subagent enhanced by a language-specific or framework-specific best practices skill. Skills can enhance both the main agent AND its subagents with specialized knowledge.
+
+Putting Everything Together - Customer Insight Analyzer example: A Skill provides a guide for how to categorize feedback and summarize findings. An MCP Server such as Google Drive MCP server accesses a Drive folder containing customer interview notes and survey responses. Subagents like Interview Analyzer and Survey Analyzer handle specific tasks in parallel.
+
+Lesson 4: Building Skills - Brand Guidelines and Marketing Analysis
+Lesson Link: https://github.com/the-schoolofai/agent-skills-files/tree/main/L3
+
+This lesson covers building practical skills through three hands-on tasks.
+
+Part 1 focuses on updating a marketing analysis skill to query BigQuery data. You modify an existing analyzing-marketing-campaign skill to work with real database connections through MCP servers.
+
+Part 2 involves creating a brand guidelines skill from scratch. This skill helps Claude understand and apply a company's visual identity, tone of voice, and design principles when creating marketing materials or content.
+
+Part 3 combines skills to analyze marketing data and generate a professional presentation. This demonstrates composability where multiple skills work together: the brand guidelines skill ensures visual consistency, the marketing analysis skill provides data insights, and presentation capabilities create the final deliverable.
+
+Lesson 5: Creating Custom Skills
+Lesson Link: https://github.com/the-schoolofai/agent-skills-files/tree/main/L4
+
+This lesson teaches how to create custom skills from scratch following best practices and the official specification.
+
+SKILL.md File Structure has two main parts: YAML Frontmatter containing metadata at the top, and Body Content with Markdown instructions below.
+
+Frontmatter Required Fields include name (max 64 chars, lowercase letters, numbers, and hyphens only, must not start or end with hyphens, must match parent directory name, recommended gerund form) and description (max 1024 chars, non-empty, should describe what the skill does AND when to use it, include specific keywords to help agents identify relevant tasks).
+
+Frontmatter Optional Fields include license (license name or reference to a license file), compatibility (max 500 chars, indicates environment requirements), metadata (arbitrary key-value pairs such as author and version), and allowed-tools (space-delimited list of pre-approved tools, experimental).
+
+Body Content has no format restrictions but recommended sections include step-by-step instructions, Input Format, Output Format, Examples, and common edge cases. Practical guidance suggests keeping it under 500 lines, moving detailed reference material to separate files, keeping references one level deep from SKILL.md, being clear and concise with consistent terminology, and using forward slashes in file paths even on Windows.
+
+Degrees of Freedom range from High freedom (general text-based directions, multiple valid approaches), to Medium freedom (instructions with customizable pseudocode or code examples, a preferred pattern exists but variation is acceptable), to Low freedom (instructions refer to specific scripts, a specific sequence must be followed).
+
+For complex workflows, break operations into clear sequential steps. If workflows become large with many steps, push them into separate files.
+
+Optional Directories include assets (templates, images, data files), references (additional documentation agents can read when needed, keep files focused, include table of contents for files over 100 lines), and scripts (clearly document dependencies, have clear documentation, make error handling explicit).
+
+Evaluation uses Unit Tests with defined test cases specifying skills to test, queries as test prompts, input files, and expected behavior descriptions. Additional evaluation tips include getting human feedback and testing with all models you plan to use.
+
+Plugins can be toggled on and off as needed. You can disable them using the /plugin command navigating to the installed tab, or via command line with claude plugin disable followed by the plugin name.
