@@ -6,76 +6,109 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Course Materials Assistant</title>
-    <link rel="stylesheet" href="style.css?v=9">
+    <title>CampaignForge — Multi-Agent AI Marketing Crew</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Course Materials Assistant</h1>
-            <p class="subtitle">Ask questions about courses, instructors, and content</p>
+    <div class="app">
+        <header class="top-bar">
+            <div class="brand">
+                <h1>CampaignForge</h1>
+                <p class="tagline">Research. Create. Critique. Refine. Ship.</p>
+            </div>
+            <nav class="top-nav">
+                <button class="nav-btn active" data-view="create">New Campaign</button>
+                <button class="nav-btn" data-view="dashboard">Dashboard</button>
+                <button class="nav-btn" data-view="docs">Brand Docs</button>
+            </nav>
         </header>
 
-        <div class="main-content">
-            <!-- Left Sidebar -->
-            <aside class="sidebar">
-                <!-- Course Stats -->
-                <div class="sidebar-section">
-                    <details class="stats-collapsible">
-                        <summary class="stats-header">Courses</summary>
-                        <div class="course-stats" id="courseStats">
-                            <div class="stat-item">
-                                <span class="stat-label">Number of courses:</span>
-                                <span class="stat-value" id="totalCourses">-</span>
+        <main class="main">
+            <!-- CREATE VIEW -->
+            <section id="createView" class="view active">
+                <div class="panel">
+                    <h2>Create Campaign Brief</h2>
+                    <form id="briefForm" class="brief-form">
+                        <div class="form-grid">
+                            <label>Product / Service<input type="text" id="product_service" required></label>
+                            <label>Product Description<textarea id="product_description" rows="3" required></textarea></label>
+                            <label>Target Audience<input type="text" id="target_audience" required></label>
+                            <label>Campaign Objective<input type="text" id="campaign_objective" required></label>
+                            <label>Target Market / Location<input type="text" id="target_market" required></label>
+                            <label>Preferred Channels<input type="text" id="preferred_channels" value="LinkedIn, Instagram, X/Twitter"></label>
+                            <label>Tone<input type="text" id="tone" value="Professional, confident, human"></label>
+                            <label>Key Selling Points<input type="text" id="key_selling_points" placeholder="Comma-separated"></label>
+                            <label>CTA<input type="text" id="cta" required></label>
+                            <label>Campaign Duration<input type="text" id="campaign_duration" value="4 weeks"></label>
+                            <label>Competitor Names<input type="text" id="competitor_names" placeholder="Comma-separated"></label>
+                            <label>Brand Guidelines<textarea id="brand_guidelines" rows="3"></textarea></label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="runCampaignBtn">Run Campaign</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- DASHBOARD VIEW -->
+            <section id="dashboardView" class="view">
+                <div class="dashboard">
+                    <div class="panel campaign-overview">
+                        <h2>Campaign Overview</h2>
+                        <div id="campaignOverview" class="overview-grid">
+                            <div class="placeholder">Select a campaign or run a new one.</div>
+                        </div>
+                    </div>
+                    <div class="panel agent-progress">
+                        <h2>Agent Progress</h2>
+                        <div id="agentProgress" class="progress-list"></div>
+                    </div>
+                    <div class="panel research-panel">
+                        <h2>Research</h2>
+                        <div id="researchPanel" class="scroll-panel"></div>
+                    </div>
+                    <div class="panel content-panel">
+                        <h2>Content</h2>
+                        <div id="contentPanel" class="scroll-panel"></div>
+                    </div>
+                    <div class="panel qa-panel">
+                        <h2>QA</h2>
+                        <div id="qaPanel" class="scroll-panel"></div>
+                    </div>
+                    <div class="panel final-panel">
+                        <h2>Final Campaign</h2>
+                        <div id="finalPanel" class="scroll-panel">
+                            <div class="approval-actions" id="approvalActions" style="display:none;">
+                                <button class="btn btn-success" id="approveBtn">Approve</button>
+                                <button class="btn btn-warning" id="reviseBtn">Request Revision</button>
+                                <button class="btn btn-danger" id="rejectBtn">Reject</button>
                             </div>
-                            <div class="stat-item">
-                                <div class="course-titles" id="courseTitles">
-                                    <span class="loading">Loading...</span>
-                                </div>
+                            <div id="exportActions" style="display:none;" class="export-links">
+                                <a class="btn btn-secondary" id="exportJson" href="#" download>Export JSON</a>
+                                <a class="btn btn-secondary" id="exportMd" href="#" download>Export Markdown</a>
+                                <a class="btn btn-secondary" id="exportCsv" href="#" download>Export CSV</a>
                             </div>
                         </div>
-                    </details>
-                </div>
-
-                <!-- Suggested Questions -->
-                <div class="sidebar-section">
-                    <details class="suggested-collapsible">
-                        <summary class="suggested-header">Try asking:</summary>
-                        <div class="suggested-items">
-                            <button class="suggested-item" data-question="What is the outline of the &quot;MCP: Build Rich-Context AI Apps&quot; course?">Outline of a course</button>
-                            <button class="suggested-item" data-question="Are there any courses that include a Chatbot implementation?">Courses about Chatbot</button>
-                            <button class="suggested-item" data-question="Are there any courses that explain what Agent Skills is?">Courses explaining RAG</button>
-                            <button class="suggested-item" data-question="What was covered in lesson 5 of the MCP course?">Details of a course's lesson</button>
-                        </div>
-                    </details>
-                </div>
-            </aside>
-
-            <!-- Main Chat Area -->
-            <main class="chat-main">
-                <div class="chat-container">
-                    <div id="chatMessages" class="chat-messages"></div>
-                    <div class="chat-input-container">
-                        <input 
-                            type="text" 
-                            id="chatInput" 
-                            placeholder="Ask about courses, lessons, or specific content..."
-                            autocomplete="off"
-                        >
-                        <button id="sendButton">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="22" y1="2" x2="11" y2="13"></line>
-                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                            </svg>
-                        </button>
                     </div>
                 </div>
-            </main>
-        </div>
+            </section>
+
+            <!-- DOCS VIEW -->
+            <section id="docsView" class="view">
+                <div class="panel">
+                    <h2>Brand Knowledge Base</h2>
+                    <div class="upload-area">
+                        <input type="file" id="docUpload" multiple accept=".pdf,.docx,.txt,.md,.csv">
+                        <button class="btn btn-primary" id="uploadBtn">Upload</button>
+                        <button class="btn btn-secondary" id="ingestBtn">Ingest docs/brand</button>
+                    </div>
+                    <div id="docList" class="doc-list"></div>
+                </div>
+            </section>
+        </main>
     </div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="script.js?v=9"></script>
+    <script src="script.js"></script>
 </body>
 </html>

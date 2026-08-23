@@ -1,6 +1,10 @@
 # Environment variables
 .env
+.env.*
+!.env.example
 backend/.env
+backend/.env.*
+!.env.example
 
 # Python
 __pycache__/
@@ -15,11 +19,17 @@ venv/
 env/
 ENV/
 
-# ChromaDB
+# Vector stores and databases
+faiss_db/
+backend/faiss_db/
+campaigns/
+backend/campaigns/
+chroma_db/
 backend/chroma_db/
 
 # Uploads
 uploads/
+backend/uploads/
 
 # IDE
 .vscode/
@@ -30,3 +40,31 @@ uploads/
 # OS
 .DS_Store
 Thumbs.db
+
+# Ollama
+ollama_data/
+.ollama/
+
+# Temporary files
+*.tmp
+*.log
+*.pid
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Legacy workspace members
+ragchatbot-langchain/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Node modules (if any frontend deps added later)
+node_modules/
+
+# Cache
+.cache/

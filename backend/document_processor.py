@@ -1,7 +1,7 @@
 import os
 import re
 from typing import List, Tuple
-from models import Course, Lesson, CourseChunk
+from backend.models import Course, Lesson, CourseChunk
 
 
 class DocumentProcessor:

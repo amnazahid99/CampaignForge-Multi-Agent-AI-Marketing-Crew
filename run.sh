@@ -1,16 +1,20 @@
 #!/bin/bash
+set -e
 
-# Create necessary directories
-mkdir -p docs 
+echo "Starting CampaignForge..."
 
-# Check if backend directory exists
-if [ ! -d "backend" ]; then
-    echo "Error: backend directory not found"
-    exit 1
+# Start Ollama in background if not running
+if ! curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+    echo "Starting Ollama..."
+    ollama serve &
+    sleep 3
 fi
 
-echo "Starting RAG System..."
-echo "Make sure Ollama is running locally (ollama serve)"
+# Pull model if needed
+echo "Ensuring model is available..."
+ollama pull llama3.1:8b || true
 
-# Change to backend directory and start the server
-cd backend && uv run fastapi dev app.py
+# Start backend
+echo "Starting backend..."
+cd backend
+uv run fastapi dev app.py
